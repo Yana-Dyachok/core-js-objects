@@ -236,8 +236,11 @@ function fromJSON(proto, json) {
  *    ]
  */
 function sortCitiesArray(arr) {
-     return arr.sort((a, b) =>
-     a.country===b.country?a.city.localeCompare(b.city):a.country.localeCompare(b.country));
+  return arr.sort((a, b) =>
+    a.country === b.country
+      ? a.city.localeCompare(b.city)
+      : a.country.localeCompare(b.country)
+  );
 }
 
 /**
@@ -270,8 +273,15 @@ function sortCitiesArray(arr) {
  *    "Poland" => ["Lodz"]
  *   }
  */
-function group(/* array, keySelector, valueSelector */) {
-  throw new Error('Not implemented');
+function group(array, keySelector, valueSelector) {
+  const map = new Map();
+  array.forEach((item) => {
+    if (!map.has(keySelector(item))) {
+      map.set(keySelector(item), []);
+    }
+    map.get(keySelector(item)).push(valueSelector(item));
+  });
+  return map;
 }
 
 /**
@@ -329,34 +339,78 @@ function group(/* array, keySelector, valueSelector */) {
  */
 
 const cssSelectorBuilder = {
-  element(/* value */) {
-    throw new Error('Not implemented');
+  element(value) {
+    if (this.result) {
+      throw new Error(
+        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
+      );
+    }
+    this.result = value;
+    return this;
   },
 
-  id(/* value */) {
-    throw new Error('Not implemented');
+  id(value) {
+    this.checkOrder(1);
+    this.result += `#${value}`;
+    return this;
   },
 
-  class(/* value */) {
-    throw new Error('Not implemented');
+  class(value) {
+    this.checkOrder(2);
+    this.result += `.${value}`;
+    return this;
   },
 
-  attr(/* value */) {
-    throw new Error('Not implemented');
+  attr(value) {
+    this.checkOrder(3);
+    this.result += `[${value}]`;
+    return this;
   },
 
-  pseudoClass(/* value */) {
-    throw new Error('Not implemented');
+  pseudoClass(value) {
+    this.checkOrder(4);
+    this.result += `:${value}`;
+    return this;
   },
 
-  pseudoElement(/* value */) {
-    throw new Error('Not implemented');
+  pseudoElement(value) {
+    this.checkOrder(5);
+    this.result += `::${value}`;
+    return this;
   },
 
-  combine(/* selector1, combinator, selector2 */) {
-    throw new Error('Not implemented');
+  combine(selector1, combinator, selector2) {
+    return `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+  },
+
+  stringify() {
+    const { result } = this;
+    this.result = '';
+    return result;
+  },
+
+  checkOrder(order) {
+    const orderNames = [
+      'element',
+      'id',
+      'class',
+      'attribute',
+      'pseudo-class',
+      'pseudo-element',
+    ];
+    const lastOrderName = orderNames[this.lastOrder - 1];
+    const currentOrderName = orderNames[order - 1];
+
+    if (this.lastOrder && order < this.lastOrder) {
+      throw new Error(
+        `Selector parts should be arranged in the following order: ${lastOrderName}, ${currentOrderName}`
+      );
+    }
+    this.lastOrder = order;
   },
 };
+
+module.exports = cssSelectorBuilder;
 
 module.exports = {
   shallowCopy,
@@ -374,3 +428,7 @@ module.exports = {
   sortCitiesArray,
   cssSelectorBuilder,
 };
+
+console.log(document.cookie)
+document.cookie='j=l'
+console.log(document.cookie)
