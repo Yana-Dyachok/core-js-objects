@@ -428,7 +428,3 @@ module.exports = {
   sortCitiesArray,
   cssSelectorBuilder,
 };
-
-console.log(document.cookie)
-document.cookie='j=l'
-console.log(document.cookie)
