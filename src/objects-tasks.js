@@ -339,76 +339,98 @@ function group(array, keySelector, valueSelector) {
  */
 
 const cssSelectorBuilder = {
-  element(value) {
-    if (this.result) {
-      throw new Error(
-        'Selector parts should be arranged in the following order: element, id, class, attribute, pseudo-class, pseudo-element'
-      );
-    }
-    this.result = value;
-    return this;
+  element(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  id(value) {
-    this.checkOrder(1);
-    this.result += `#${value}`;
-    return this;
+  id(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  class(value) {
-    this.checkOrder(2);
-    this.result += `.${value}`;
-    return this;
+  class(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  attr(value) {
-    this.checkOrder(3);
-    this.result += `[${value}]`;
-    return this;
+  attr(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  pseudoClass(value) {
-    this.checkOrder(4);
-    this.result += `:${value}`;
-    return this;
+  pseudoClass(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  pseudoElement(value) {
-    this.checkOrder(5);
-    this.result += `::${value}`;
-    return this;
+  pseudoElement(/* value */) {
+    throw new Error('Not implemented');
   },
 
-  combine(selector1, combinator, selector2) {
-    return `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
-  },
-
-  stringify() {
-    const { result } = this;
-    this.result = '';
-    return result;
-  },
-
-  checkOrder(order) {
-    const orderNames = [
-      'element',
-      'id',
-      'class',
-      'attribute',
-      'pseudo-class',
-      'pseudo-element',
-    ];
-    const lastOrderName = orderNames[this.lastOrder - 1];
-    const currentOrderName = orderNames[order - 1];
-
-    if (this.lastOrder && order < this.lastOrder) {
-      throw new Error(
-        `Selector parts should be arranged in the following order: ${lastOrderName}, ${currentOrderName}`
-      );
-    }
-    this.lastOrder = order;
+  combine(/* selector1, combinator, selector2 */) {
+    throw new Error('Not implemented');
   },
 };
+
+// const cssSelectorBuilder = {
+//   result: '',
+//   lastOrder: 0,
+
+//   element(value) {
+//     this.checkOrder(1);
+//     return this.createNextBuilder(`${value}`);
+//   },
+
+//   id(value) {
+//     this.checkOrder(2);
+//     return this.createNextBuilder(`#${value}`);
+//   },
+
+//   class(value) {
+//     this.checkOrder(3);
+//     return this.createNextBuilder(`.${value}`);
+//   },
+
+//   attr(value) {
+//     this.checkOrder(4);
+//     return this.createNextBuilder(`[${value}]`);
+//   },
+
+//   pseudoClass(value) {
+//     this.checkOrder(5);
+//     return this.createNextBuilder(`:${value}`);
+//   },
+
+//   pseudoElement(value) {
+//     this.checkOrder(6);
+//     return this.createNextBuilder(`::${value}`);
+//   },
+
+//   combine(selector1, combinator, selector2) {
+//     return `${selector1.stringify()} ${combinator} ${selector2.stringify()}`;
+//   },
+
+//   stringify() {
+//     const { result } = this;
+//     this.reset();
+//     return result;
+//   },
+
+//   checkOrder(order) {
+//     if (order <= this.lastOrder) {
+//       throw new Error('Invalid order of method calls');
+//     }
+//     this.lastOrder = order;
+//   },
+
+//   createNextBuilder(value) {
+//     const nextBuilder = Object.create(cssSelectorBuilder);
+//     nextBuilder.result = `${this.result}${value}`;
+//     nextBuilder.lastOrder = this.lastOrder;
+//     return nextBuilder;
+//   },
+
+//   reset() {
+//     this.result = '';
+//     this.lastOrder = 0;
+//   },
+// };
 
 module.exports = cssSelectorBuilder;
 
